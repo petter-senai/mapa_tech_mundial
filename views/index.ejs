@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa Tech Mundial - Explore o Mundo</title>
+    <link rel="stylesheet" href="/css/style.css?v=1.1">
+</head>
+
+<body class="bg-home">
+    <nav>
+        <div class="logo">Mapa Tech Mundial</div>
+        <ul>
+            <li><a href="/">Início</a></li>
+            <% if (locals.user) { %>
+                <li><a href="/dashboard">Meus Favoritos</a></li>
+                <li><a href="/logout">Sair</a></li>
+                <% } else { %>
+                    <li><a href="/login">Entrar</a></li>
+                    <li><a href="/cadastro">Cadastrar</a></li>
+                    <% } %>
+        </ul>
+    </nav>
+
+    <main class="container">
+        <section class="hero">
+            <h1>Explore o mundo <br> <span style="color: var(--primary);">com API Countries</span></h1>
+            <p>Descubra informações reais de todos os países do globo através da nossa plataforma interativa.</p>
+
+            <% if (locals.error) { %>
+                <div class="alert" style="max-width: 600px; margin: 0 auto 1.5rem;">
+                    <%= error %>
+                </div>
+                <% } %>
+
+                    <form action="/buscar" method="GET" class="search-box">
+                        <input type="text" name="nome" placeholder="Digite o nome de um país (Ex: Brasil, Japan...)"
+                            required>
+                        <button type="submit" class="btn btn-primary">Explorar</button>
+                    </form>
+        </section>
+    </main>
+</body>
+
+</html>

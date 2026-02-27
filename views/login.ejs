@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Mapa Tech Mundial</title>
+    <link rel="stylesheet" href="/css/style.css?v=1.1">
+</head>
+
+<body>
+    <nav>
+        <a href="/" class="logo">Mapa Tech Mundial</a>
+    </nav>
+
+    <main class="container">
+        <div class="auth-container card">
+            <h2 style="margin-bottom: 2rem; text-align: center;">Bem-vindo de volta</h2>
+
+            <% if (locals.error) { %>
+                <div class="alert">
+                    <%= error %>
+                </div>
+                <% } %>
+
+                    <form action="/login" method="POST">
+                        <div class="form-group">
+                            <label for="email">E-mail</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="senha">Senha</label>
+                            <input type="password" id="senha" name="senha" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary"
+                            style="width: 100%; margin-top: 1rem;">Entrar</button>
+                    </form>
+                    <p style="text-align: center; margin-top: 2rem; color: var(--text-muted);">
+                        Não tem uma conta? <a href="/cadastro" style="color: var(--primary);">Cadastre-se</a>
+                    </p>
+        </div>
+    </main>
+</body>
+
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= pais.nome %> - Mapa Tech Mundial
+    </title>
+    <link rel="stylesheet" href="/css/style.css?v=1.1">
+</head>
+
+<body>
+    <nav>
+        <a href="/" class="logo">Mapa Tech Mundial</a>
+        <ul>
+            <li><a href="/">Início</a></li>
+            <% if (locals.user) { %>
+                <li><a href="/dashboard">Meus Favoritos</a></li>
+                <li><a href="/logout">Sair</a></li>
+                <% } %>
+        </ul>
+    </nav>
+
+    <main class="container">
+        <div class="card country-grid">
+            <div class="flag-container">
+                <img src="<%= pais.bandeira %>" alt="Bandeira de <%= pais.nome %>" class="flag-img">
+            </div>
+
+            <div class="info-container">
+                <h1 style="margin-bottom: 1rem;">
+                    <%= pais.nome %>
+                </h1>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem;">
+                    <div>
+                        <p style="color: var(--text-muted);">Capital</p>
+                        <p><strong>
+                                <%= pais.capital %>
+                            </strong></p>
+                    </div>
+                    <div>
+                        <p style="color: var(--text-muted);">Região</p>
+                        <p><strong>
+                                <%= pais.regiao %>
+                            </strong></p>
+                    </div>
+                    <div>
+                        <p style="color: var(--text-muted);">População</p>
+                        <p><strong>
+                                <%= pais.populacao.toLocaleString() %>
+                            </strong></p>
+                    </div>
+                    <div>
+                        <p style="color: var(--text-muted);">Moeda</p>
+                        <p><strong>
+                                <%= pais.moeda %>
+                            </strong></p>
+                    </div>
+                    <div style="grid-column: span 2;">
+                        <p style="color: var(--text-muted);">Idioma</p>
+                        <p><strong>
+                                <%= pais.idioma %>
+                            </strong></p>
+                    </div>
+                </div>
+
+                <form action="/favoritar" method="POST">
+                    <input type="hidden" name="nome" value="<%= pais.nome %>">
+                    <input type="hidden" name="capital" value="<%= pais.capital %>">
+                    <input type="hidden" name="regiao" value="<%= pais.regiao %>">
+                    <input type="hidden" name="populacao" value="<%= pais.populacao %>">
+                    <input type="hidden" name="moeda" value="<%= pais.moeda %>">
+                    <input type="hidden" name="idioma" value="<%= pais.idioma %>">
+                    <input type="hidden" name="bandeira" value="<%= pais.bandeira %>">
+
+                    <button type="submit" class="btn btn-primary" style="padding: 1rem 2rem;">
+                        ⭐ Salvar nos Favoritos
+                    </button>
+                    <% if (!locals.user) { %>
+                        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">
+                            (Você precisa estar logado para salvar)
+                        </p>
+                        <% } %>
+                </form>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>

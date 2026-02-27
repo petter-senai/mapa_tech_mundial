@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Mapa Tech Mundial</title>
+    <link rel="stylesheet" href="/css/style.css?v=1.1">
+</head>
+
+<body>
+    <nav>
+        <a href="/" class="logo">Mapa Tech Mundial</a>
+        <ul>
+            <li><a href="/">Início</a></li>
+            <li><strong>
+                    <%= user.nome %>
+                </strong></li>
+            <li><a href="/logout">Sair</a></li>
+        </ul>
+    </nav>
+
+    <main class="container">
+        <h2 style="margin-bottom: 2rem;">Minha Exploração</h2>
+
+        <div class="stats-grid">
+            <div class="card stat-card">
+                <h3>Total de Países</h3>
+                <p>
+                    <%= stats.total %>
+                </p>
+            </div>
+            <div class="card stat-card">
+                <h3>Região mais Explorada</h3>
+                <p>
+                    <%= stats.mostExploredRegion %>
+                </p>
+            </div>
+        </div>
+
+        <h3 style="margin-bottom: 1.5rem;">Países Salvos</h3>
+
+        <% if (favoritos.length===0) { %>
+            <div class="card" style="text-align: center; padding: 4rem;">
+                <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Você ainda não favoritou nenhum país.</p>
+                <a href="/" class="btn btn-outline">Começar a explorar</a>
+            </div>
+            <% } else { %>
+                <div class="favorites-list">
+                    <% favoritos.forEach(fav=> { %>
+                        <div class="card favorite-card">
+                            <img src="<%= fav.bandeira %>" alt="Bandeira" style="width: 100%;">
+                            <div class="favorite-info">
+                                <h4>
+                                    <%= fav.nome_pais %>
+                                </h4>
+                                <div class="favorite-details">
+                                    <p><strong>Capital:</strong>
+                                        <%= fav.capital %>
+                                    </p>
+                                    <p><strong>Região:</strong>
+                                        <%= fav.regiao %>
+                                    </p>
+                                </div>
+                                <form action="/remover-favorito" method="POST">
+                                    <input type="hidden" name="id" value="<%= fav.id %>">
+                                    <button type="submit" class="btn btn-outline"
+                                        style="width: 100%; border-color: rgba(239, 68, 68, 0.5); color: #ef4444;">
+                                        Remover
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        <% }) %>
+                </div>
+                <% } %>
+    </main>
+</body>
+
+</html>
