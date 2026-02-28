@@ -1,18 +1,20 @@
 const mysql = require('mysql2');
 require('dotenv').config();
 
-const pool = mysql.createPool({
+// Criar a conexão usando a URL completa (recomendado pelo Railway) ou os parâmetros individuais
+const pool = mysql.createPool(process.env.MYSQL_URL || {
     host: process.env.MYSQLHOST || process.env.DB_HOST,
     user: process.env.MYSQLUSER || process.env.DB_USER,
     password: process.env.MYSQLPASSWORD || process.env.DB_PASS,
-    database: process.env.MYSQLDATABASE || process.env.DB_NAME,
+    database: process.env.MYSQLDATABASE || process.env.DB_NAME || 'railway',
     port: process.env.MYSQLPORT || process.env.DB_PORT || 3306,
     ssl: {
         rejectUnauthorized: false
     },
     waitForConnections: true,
-    connectionLimit: 10,
-    queueLimit: 0
+    connectionLimit: 5,
+    queueLimit: 0,
+    connectTimeout: 20000 // Aumentado para 20 segundos para evitar timeouts no Railway
 });
 
 // Testar conexão

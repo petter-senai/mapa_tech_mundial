@@ -6,42 +6,47 @@ require('dotenv').config();
 async function runMigration() {
     console.log('--- Iniciando Migração do Banco de Dados Railway ---');
 
-    // Dados da conexão
-    const config = {
-        host: process.env.MYSQLHOST || process.env.DB_HOST,
-        user: process.env.MYSQLUSER || process.env.DB_USER,
-        password: process.env.MYSQLPASSWORD || process.env.DB_PASS,
-        database: process.env.MYSQLDATABASE || process.env.DB_NAME,
-        port: parseInt(process.env.MYSQLPORT || process.env.DB_PORT) || 3306,
-        ssl: { rejectUnauthorized: false },
-        multipleStatements: true // Permite rodar o SQL inteiro de uma vez
+    // Tenta usar a URL completa primeiro, se não usa os dados soltos
+    const connectionString = process.env.MYSQL_URL || {
+        host: process.env.DB_HOST,
+        user: process.env.DB_USER,
+        password: process.env.DB_PASS,
+        database: process.env.DB_NAME,
+        port: parseInt(process.env.DB_PORT) || 3306,
+        ssl: { rejectUnauthorized: false }
     };
 
-    console.log(`Conectando em: ${config.host}:${config.port}...`);
+    console.log('Tentando conectar...');
 
     let connection;
     try {
-        connection = await mysql.createConnection(config);
-        console.log('✅ Conexão estabelecida com sucesso!');
+        connection = await mysql.createConnection(connectionString);
+        console.log('✅ Conectado ao MySQL!');
 
         const sqlPath = path.join(__dirname, 'database.sql');
-        const sql = fs.readFileSync(sqlPath, 'utf8');
+        let sql = fs.readFileSync(sqlPath, 'utf8');
 
-        console.log('Executando arquivo database.sql...');
-        await connection.query(sql);
+        // Remover comandos de CREATE/USE DATABASE para evitar conflitos no Railway
+        sql = sql.replace(/CREATE DATABASE IF NOT EXISTS.*;/gi, '-- Database creation skipped');
+        sql = sql.replace(/USE .*;/gi, '-- Use database skipped');
 
-        console.log('🚀 Tabelas criadas com sucesso!');
-        console.log('Agora você pode rodar o projeto com "npm start".');
+        // Dividir os comandos por ponto e vírgula e executar um por um
+        const commands = sql.split(';').filter(cmd => cmd.trim());
+
+        for (let cmd of commands) {
+            if (cmd.trim()) {
+                await connection.query(cmd);
+                console.log('✔️ Comando executado com sucesso.');
+            }
+        }
+
+        console.log('\n🚀 TABELAS CRIADAS COM SUCESSO NO RAILWAY!');
+        console.log('Agora tente rodar: npm start');
 
     } catch (error) {
-        console.error('❌ Erro durante a migração:');
+        console.error('\n❌ ERRO NA MIGRAÇÃO:');
         console.error(error.message);
-
-        if (error.message.includes('Access denied')) {
-            console.log('\n--- DICA DE ACESSO ---');
-            console.log('O Railway às vezes bloqueia conexões externas do usuário root logo após criar a senha.');
-            console.log('Tente aguardar 2 minutos ou verifique se a porta pública está correta no seu .env.');
-        }
+        console.log('\nSe o erro for "Access denied", tente esperar 1 minuto e rode novamente.');
     } finally {
         if (connection) await connection.end();
         process.exit();
