@@ -1,0 +1,7 @@
+﻿[dotenv@17.3.1] injecting env (7) from .env -- tip: ÔÜÖ´©Å  override existing env vars with { override: true }
+--- Iniciando Migra├º├úo do Banco de Dados Railway ---
+Conectando em: hopper.proxy.rlwy.net:10826...
+
+--- DICA DE ACESSO ---
+O Railway ├ás vezes bloqueia conex├Áes externas do usu├írio root logo ap├│s criar a senha.
+Tente aguardar 2 minutos ou verifique se a porta p├║blica est├í correta no seu .env.
